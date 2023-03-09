@@ -1,0 +1,26 @@
+library(tidyverse)
+library(RODBC)
+
+con <- odbcConnect("Summaryindicators")
+
+ghs_health <- sqlQuery(con ,"with a as (
+select year, condition cond1, [value]
+, case when condition like '%sym_prev' then 'Self-reported diagnoses' when condition like '%prev' then 'Doctor confirmed diagnoses' when condition like '%_trt' then 'On treatment for diagnoses' end diagnoses
+, case when condition like 'tb_%' then 'TB' when condition like 'hiv_%' then 'HIV' when condition like 'asthma_%' or condition like 'asm_%' then 'Asthma' when condition like 'epil_%' then 'Epilepsy'
+       when condition like 'can_%' or condition like 'cancer_%' then 'Cancer'  when condition like 'highbp_%' or condition like 'hbp_%' then 'Hypertension' when condition like 'diabetes_%' or condition like 'dbt_%' then 'Diabetes'
+	   when condition like 'strk_%' then 'Stroke' when condition like 'flu_%' then 'Flu or acute respiratory tract infection' when condition like 'dia_%' then 'Diarrhoea' when condition like 'scblood_%' then 'Severe cough with blood'
+	   when condition like 'dep_%' then 'Depression' when condition like 'std_%' then 'STDs' when condition like 'pneu_%' then 'Pneumonia' when condition like 'bron_%' then 'Bronchitis' when condition like 'epil_%' then 'Epileptic seizures'
+	   when condition like 'mal_%' then 'Malaria' when condition like 'men_%' or condition like 'mental_%' then 'Mental illness' when condition like 'heart_%' then 'Heart Attack' when condition like 'chol%' then 'Cholestrol' when condition like 'arth%' then 'Arthritis' 
+	   when condition like 'oster%' then 'Osteoporosis' when condition like '' then '' when condition like '' then '' when condition like '' then '' when condition like '' then '' when condition like '' then '' 
+	   end condition
+from GHS..Health_Expo
+unpivot (
+ [value] for [condition] in ([flu_sym_prev],[dia_sym_prev], [scblood_sym_prev],[dep_sym_prev], [std_sym_prev],[pneu_sym_prev],[bron_sym_prev],[epil_sym_prev],[mal_sym_prev], [asthma_prev],[diabetes_prev],[hiv_prev],[cancer_prev], [highbp_prev], [arthritis_prev], [heart_prev],[strk_prev], [mental_prev],[tb_prev],[epil_prev],[men_prev], [pneu_prev], [bron_prev],[oster_prev],[mal_prev],[cholestrol_prev], [asm_trt], [dbt_trt],[hiv_trt],[can_trt],[hbp_trt],[arth_trt],[heart_trt],[strk_trt],[mental_trt],[tb_trt],[epil_trt],[men_trt],[pneu_trt],[bron_trt],[oster_trt], [chole_trt])
+) as p
+)
+select *
+from a")
+
+ggplot(subset(ghs_health, diagnoses=="Self-reported diagnoses" & condition != "Flu or acute respiratory tract infection"), aes(x=year, y=value, color = condition))+
+  geom_line()+
+  geom_smooth()

@@ -1,0 +1,28 @@
+email: 'info@busymovers.capetown'
+phone: '061 869 8945'
+businessName: 'Hugo Serif'
+address: |
+  92 Racecourse Rd
+  Kenwyn, Cape Town 7779
+hours:
+  - day: Monday
+    open: 8:30am
+    close: 5:00pm
+  - day: Tuesday
+    open: 8:30am
+    close: 5:00pm
+  - day: Wednesday
+    open: 8:30am
+    close: 5:00pm
+  - day: Thursday
+    open: 8:30am
+    close: 5:00pm
+  - day: Friday
+    open: 8:30am
+    close: 5:00pm
+  - day: Saturday
+    open: 8:30
+    close: 2:00pm
+  - day: Sunday
+    open: Closed
+    close:
